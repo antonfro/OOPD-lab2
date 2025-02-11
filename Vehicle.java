@@ -1,6 +1,6 @@
 import java.awt.*;
 
-public class Vehicle implements Movable{
+public abstract class Vehicle implements Movable{
     private int nrDoors;
     private Color color;
     private int enginePower;
@@ -8,15 +8,17 @@ public class Vehicle implements Movable{
     protected double currentSpeed;
     private double x;
     private double y;
-    private Direction towards;
 
-    public Vehicle(int doors, Color colr, int engPow, String mdlName) {
-        this.nrDoors = doors;
+    private int currentDir;
+    final private Direction[] directions = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+
+    public Vehicle(int nrDoors, Color color, int engPow, String mdlName) {
+        this.nrDoors = nrDoors;
         this.enginePower = engPow;
-        this.color = colr;
+        this.color = color;
         this.modelName = mdlName;
         stopEngine();
-        towards = Direction.NORTH;
+        this.currentDir = 0; // 0 is north
     }
 
     public double getX(){return x;}
@@ -25,7 +27,7 @@ public class Vehicle implements Movable{
 
     public enum Direction{SOUTH, WEST, NORTH, EAST}
 
-    public Direction getTowards(){return towards;}
+    public Direction getTowards() {return directions[currentDir];}
 
     public double getSpeedFactor(){return speedFactor();}
 
@@ -104,38 +106,12 @@ public class Vehicle implements Movable{
 
     @Override
     public void turnLeft(){
-        switch (getTowards()) {
-            case SOUTH:
-                this.towards = Direction.EAST;
-                break;
-            case WEST:
-                this.towards = Direction.SOUTH;
-                break;
-            case NORTH:
-                this.towards = Direction.WEST;
-                break;
-            case EAST:
-                this.towards = Direction.NORTH;
-                break;
-        }
+        currentDir = (currentDir - 1) % 4;
     }
 
     @Override
     public void turnRight(){
-        switch (getTowards()) {
-            case SOUTH:
-                this.towards = Direction.WEST;
-                break;
-            case WEST:
-                this.towards = Direction.NORTH;
-                break;
-            case NORTH:
-                this.towards = Direction.EAST;
-                break;
-            case EAST:
-                this.towards = Direction.SOUTH;
-                break;
-        }
+        currentDir = (1 + currentDir) % 4;
     }
 
 }
